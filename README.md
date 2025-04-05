@@ -1,11 +1,11 @@
 > [!IMPORTANT]
-> 
-> -  原作者 [aps2](https://github.com/sideshow/apns2)
 >
-> - 增加target-content-id 参数
-> - 修改golang 版本为1.23.7
-> - 修改版本号 v0.27.0
-> - 升级依赖
+> - Original author [aps2](https://github.com/sideshow/apns2)
+>
+> - Added `target-content-id` parameter
+> - Updated Golang version to 1.23.7
+> - Changed version number to v0.27.0
+> - Upgraded dependencies
 
 
 # APNS/2
