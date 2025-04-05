@@ -58,6 +58,7 @@ type aps struct {
 	Timestamp         int64                  `json:"timestamp,omitempty"`
 	AttributesType    string                 `json:"attributes-type,omitempty"`
 	Attributes        map[string]interface{} `json:"attributes,omitempty"`
+	TargetContentID   string                 `json:"target-content-id,omitempty"`
 }
 
 type alert struct {
@@ -480,6 +481,12 @@ func (p *Payload) RelevanceScore(b float32) *Payload {
 //	{"aps":{"relevance-score":0.1}}
 func (p *Payload) UnsetRelevanceScore() *Payload {
 	p.aps().RelevanceScore = nil
+	return p
+}
+
+// TargetContentID sets the target-content-id on the payload.
+func (p *Payload) TargetContentID(targetContentID string) *Payload {
+	p.aps().TargetContentID = targetContentID
 	return p
 }
 

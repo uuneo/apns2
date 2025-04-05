@@ -5,11 +5,10 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
+	"github.com/golang-jwt/jwt/v5"
 	"os"
 	"sync"
 	"time"
-
-	"github.com/golang-jwt/jwt/v4"
 )
 
 const (
