@@ -1,3 +1,13 @@
+> [!IMPORTANT]
+> 
+> -  原作者 [aps2](https://github.com/sideshow/apns2)
+>
+> - 增加target-content-id 参数
+> - 修改golang 版本为1.23.7
+> - 修改版本号 v0.27.0
+> - 升级依赖
+
+
 # APNS/2
 
 APNS/2 is a go package designed for simple, flexible and fast Apple Push Notifications on iOS, OSX and Safari using the new HTTP/2 Push provider API.
