@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/sideshow/apns2/certificate"
 	"github.com/stretchr/testify/assert"
+	"github.com/uuneo/apns2/certificate"
 )
 
 // PKCS#12

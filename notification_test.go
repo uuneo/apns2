@@ -3,8 +3,8 @@ package apns2_test
 import (
 	"testing"
 
-	"github.com/sideshow/apns2"
 	"github.com/stretchr/testify/assert"
+	"github.com/uuneo/apns2"
 )
 
 func TestMarshalJSON(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/sideshow/apns2/payload"
 	"github.com/stretchr/testify/assert"
+	. "github.com/uuneo/apns2/payload"
 )
 
 func TestEmptyPayload(t *testing.T) {
