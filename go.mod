@@ -3,7 +3,7 @@ module github.com/uuneo/apns2
 go 1.23.7
 
 require (
-	github.com/alecthomas/kingpin/v2 v2.4.0
+	github.com/alecthomas/kong v1.12.0
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.40.0
@@ -11,7 +11,6 @@ require (
 )
 
 require (
-	github.com/alecthomas/units v0.0.0-20240927000941-0f3dac36c52b // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
