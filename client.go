@@ -88,18 +88,43 @@ type connectionCloser interface {
 //
 // If your use case involves multiple long-lived connections, consider using
 // the ClientManager, which manages clients for you.
+//func NewClient(certificate tls.Certificate) *Client {
+//	tlsConfig := &tls.Config{
+//		Certificates: []tls.Certificate{certificate},
+//	}
+//	if len(certificate.Certificate) > 0 {
+//		tlsConfig.BuildNameToCertificate()
+//	}
+//	transport := &http2.Transport{
+//		TLSClientConfig: tlsConfig,
+//		DialTLS:         DialTLS,
+//		ReadIdleTimeout: ReadIdleTimeout,
+//	}
+//	return &Client{
+//		HTTPClient: &http.Client{
+//			Transport: transport,
+//			Timeout:   HTTPClientTimeout,
+//		},
+//		Certificate: certificate,
+//		Host:        DefaultHost,
+//	}
+//}
+
 func NewClient(certificate tls.Certificate) *Client {
 	tlsConfig := &tls.Config{
 		Certificates: []tls.Certificate{certificate},
+		// 不要设置 NameToCertificate，Go 会自动选择兼容证书链
 	}
-	if len(certificate.Certificate) > 0 {
-		tlsConfig.BuildNameToCertificate()
-	}
+
 	transport := &http2.Transport{
 		TLSClientConfig: tlsConfig,
-		DialTLS:         DialTLS,
-		ReadIdleTimeout: ReadIdleTimeout,
+		DialTLSContext: func(ctx context.Context, network, addr string, cfg *tls.Config) (net.Conn, error) {
+			d := &net.Dialer{}
+			conn, err := tls.DialWithDialer(d, network, addr, cfg)
+			return conn, err
+		},
 	}
+
 	return &Client{
 		HTTPClient: &http.Client{
 			Transport: transport,
@@ -120,7 +145,19 @@ func NewClient(certificate tls.Certificate) *Client {
 // connection and disconnection as a denial-of-service attack.
 func NewTokenClient(token *token.Token) *Client {
 	transport := &http2.Transport{
-		DialTLS:         DialTLS,
+		DialTLSContext: func(ctx context.Context, network, addr string, cfg *tls.Config) (net.Conn, error) {
+			d := &net.Dialer{}
+			rawConn, err := d.DialContext(ctx, network, addr)
+			if err != nil {
+				return nil, err
+			}
+			tlsConn := tls.Client(rawConn, cfg)
+			if err := tlsConn.Handshake(); err != nil {
+				_ = rawConn.Close()
+				return nil, err
+			}
+			return tlsConn, nil
+		},
 		ReadIdleTimeout: ReadIdleTimeout,
 	}
 	return &Client{
@@ -157,7 +194,7 @@ func (c *Client) Push(n *Notification) (*Response, error) {
 }
 
 // PushWithContext sends a Notification to the APNs gateway. Context carries a
-// deadline and a cancellation signal and allows you to close long running
+// deadline and a cancellation signal and allows you to close long-running
 // requests when the context timeout is exceeded. Context can be nil, for
 // backwards compatibility.
 //
@@ -187,7 +224,11 @@ func (c *Client) PushWithContext(ctx Context, n *Notification) (*Response, error
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
+	defer func() {
+		{
+			_ = response.Body.Close()
+		}
+	}()
 
 	r := &Response{}
 	r.StatusCode = response.StatusCode
